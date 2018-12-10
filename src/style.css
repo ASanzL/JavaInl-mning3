@@ -1,0 +1,48 @@
+.root {
+    -fx-background-color: #fbfeff;
+}
+#dropdown {
+    -fx-background-color: #FF8600;
+    -fx-font-size: 15px;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #1f1f1f;
+    -fx-border-radius: 0px;
+}
+#selected-price {
+    -fx-font-size: 14px;
+}
+#add-consert {
+    -fx-background-color: #FF8600;
+    -fx-font-size: 18px;
+    -fx-padding: 5px;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #1f1f1f;
+    -fx-border-radius: 0px;
+}
+#add-consert:hover {
+    -fx-background-color: #B2630A;
+    -fx-cursor: hand;
+}
+#clear-conserts {
+    -fx-background-color: #00B7FF;
+    -fx-font-size: 18px;
+    -fx-padding: 5px;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+    -fx-border-color: #1f1f1f;
+    -fx-border-radius: 0px;
+}
+#clear-conserts:hover {
+    -fx-background-color: #0080B2;
+    -fx-cursor: hand;
+}
+#all-selected-conserts {
+    -fx-font-size: 14px;
+}
+#total-price {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-fill: #1f1f1f;
+}

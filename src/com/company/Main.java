@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -14,10 +15,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
 
-    ArrayList<Consert> list = new ArrayList<>();
+    ArrayList<Consert> consertsList = new ArrayList<>();
+    Consert markKnopfler = new Consert("Mark Knopfler", 630);
+    Consert bobDylan = new Consert("Bob Dylan", 645);
+    Consert metallica = new Consert("Metallica", 525);
 
     public static void main(String[] args) {
         launch(args);
@@ -27,51 +32,110 @@ public class Main extends Application {
     public void start(Stage stage) {
         stage.setTitle("Boka konsert");
 
+        Text allSelectedConsertsText = new Text("");
+        allSelectedConsertsText.setId("all-selected-conserts");
+        Text selectedConsertPriceText = new Text("");
+        selectedConsertPriceText.setId("selected-price");
+        Text allConsertTotalPriceText = new Text("");
+        allConsertTotalPriceText.setId("total-price");
+
         ObservableList<String> options =
                 FXCollections.observableArrayList(
-                        "1",
-                        "2",
-                        "3"
+                        "Mark Knopfler",
+                        "Bob Dylan",
+                        "Metallica"
                 );
         final ComboBox comboBox = new ComboBox(options);
         comboBox.getSelectionModel().selectFirst();
+        comboBox.setId("dropdown");
 
-        Text text = new Text("");
-
-        Button btn = new Button();
-        btn.setText("Lägg till");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-
+        selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()));
+        comboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                switch (comboBox.getValue().toString()) {
-                    case "1":
-                        list.add(new Consert("Konsert 1", 5000));
-                }
-                updateListText(text);
+                selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()));
             }
         });
 
-        Separator separator1 = new Separator();
+        Button addConsertButton = new Button();
+        addConsertButton.setText("Lägg till");
+        addConsertButton.setId("add-consert");
+
+        addConsertButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (comboBox.getValue().toString()) {
+                    case "Mark Knopfler":
+                        consertsList.add(markKnopfler);
+                        break;
+                    case "Bob Dylan":
+                        consertsList.add(bobDylan);
+                        break;
+                    case "Metallica":
+                        consertsList.add(metallica);
+                        break;
+                }
+                updateListText(allSelectedConsertsText);
+                updateTotalPriceText(allConsertTotalPriceText);
+            }
+        });
+
+        Button clearConsertsButton = new Button();
+        clearConsertsButton.setText("Rensa");
+        clearConsertsButton.setId("clear-conserts");
+
+        clearConsertsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                consertsList.clear();
+                updateListText(allSelectedConsertsText);
+                updateTotalPriceText(allConsertTotalPriceText);
+            }
+        });
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+        grid.setAlignment(Pos.TOP_CENTER);
 
         grid.add(comboBox, 0, 0);
-        grid.add(btn, 1, 0);
-        grid.add(separator1, 0, 1);
-        grid.add(text, 0, 2);
+        grid.add(selectedConsertPriceText, 1, 0);
+        grid.add(addConsertButton, 1, 1);
+        grid.add(clearConsertsButton, 2, 1);
+        grid.add(allSelectedConsertsText, 0, 2);
+        grid.add(allConsertTotalPriceText, 0, 3);
 
-        stage.setScene(new Scene(grid, 400, 300));
+        Scene scene = new Scene(grid, 600, 400);
+        scene.getStylesheets().add("style.css");
+        stage.setScene(scene);
         stage.show();
+    }
+
+    private String updatePriceText(String s) {
+        switch (s) {
+            case "Mark Knopfler":
+                return markKnopfler.getPrice() + " kr";
+            case "Bob Dylan":
+                return bobDylan.getPrice() + " kr";
+            case "Metallica":
+                return metallica.getPrice() + " kr";
+        }
+        return "";
     }
 
     private void updateListText(Text text) {
         String s = "";
-        for (Consert list : list) {
-            s += list.getName() + " - " + list.getPrice() + "kr." + "\n";
+        for (Consert list : consertsList) {
+            s += list.getName() + " | " + list.getPrice() + "kr." + "\n";
         }
         text.setText(s);
+    }
+
+    private void updateTotalPriceText(Text text) {
+        int i = 0;
+        for (Consert list : consertsList) {
+            i += list.getPrice();
+        }
+        text.setText("Totalpris: " + i + " kr");
     }
 }
