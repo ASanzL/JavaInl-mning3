@@ -3,19 +3,15 @@ package com.company;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -50,48 +46,25 @@ public class Main extends Application {
         comboBox.setId("dropdown");
 
         selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()));
-        comboBox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()));
-            }
-        });
+        comboBox.setOnAction(e ->
+                selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()))
+        );
 
         Button addConsertButton = new Button();
         addConsertButton.setText("Lägg till");
         addConsertButton.setId("add-consert");
 
-        addConsertButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                switch (comboBox.getValue().toString()) {
-                    case "Mark Knopfler":
-                        consertsList.add(markKnopfler);
-                        break;
-                    case "Bob Dylan":
-                        consertsList.add(bobDylan);
-                        break;
-                    case "Metallica":
-                        consertsList.add(metallica);
-                        break;
-                }
-                updateListText(allSelectedConsertsText);
-                updateTotalPriceText(allConsertTotalPriceText);
-            }
-        });
+        addConsertButton.setOnAction(e ->
+                onAddConsert(comboBox, allSelectedConsertsText, allConsertTotalPriceText)
+                );
 
         Button clearConsertsButton = new Button();
         clearConsertsButton.setText("Rensa");
         clearConsertsButton.setId("clear-conserts");
 
-        clearConsertsButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                consertsList.clear();
-                updateListText(allSelectedConsertsText);
-                updateTotalPriceText(allConsertTotalPriceText);
-            }
-        });
+        clearConsertsButton.setOnAction(e ->
+            onClearConserts(allSelectedConsertsText,allConsertTotalPriceText)
+        );
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -109,6 +82,28 @@ public class Main extends Application {
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void onAddConsert(ComboBox comboBox, Text allSelectedConsertsText, Text allConsertTotalPriceText) {
+        switch (comboBox.getValue().toString()) {
+            case "Mark Knopfler":
+                consertsList.add(markKnopfler);
+                break;
+            case "Bob Dylan":
+                consertsList.add(bobDylan);
+                break;
+            case "Metallica":
+                consertsList.add(metallica);
+                break;
+        }
+        updateListText(allSelectedConsertsText);
+        updateTotalPriceText(allConsertTotalPriceText);
+    }
+
+    private void onClearConserts(Text allSelectedConsertsText, Text allConsertTotalPriceText) {
+        consertsList.clear();
+        updateListText(allSelectedConsertsText);
+        updateTotalPriceText(allConsertTotalPriceText);
     }
 
     private String updatePriceText(String s) {
