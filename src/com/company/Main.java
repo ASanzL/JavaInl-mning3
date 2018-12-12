@@ -13,12 +13,22 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+/**
+ * Program för att köpa konsertbiljetter.
+ * @author Andreas Sanz
+ */
 public class Main extends Application {
 
     ArrayList<Consert> consertsList = new ArrayList<>();
     Consert markKnopfler = new Consert("Mark Knopfler", 630);
     Consert bobDylan = new Consert("Bob Dylan", 645);
     Consert metallica = new Consert("Metallica", 525);
+
+    Text allSelectedConsertsText = new Text("");
+    Text selectedConsertPriceText = new Text("");
+    Text allConsertTotalPriceText = new Text("");
+
+    ComboBox comboBox;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,11 +38,8 @@ public class Main extends Application {
     public void start(Stage stage) {
         stage.setTitle("Boka konsert");
 
-        Text allSelectedConsertsText = new Text("");
         allSelectedConsertsText.setId("all-selected-conserts");
-        Text selectedConsertPriceText = new Text("");
         selectedConsertPriceText.setId("selected-price");
-        Text allConsertTotalPriceText = new Text("");
         allConsertTotalPriceText.setId("total-price");
 
         ObservableList<String> options =
@@ -41,7 +48,7 @@ public class Main extends Application {
                         "Bob Dylan",
                         "Metallica"
                 );
-        final ComboBox comboBox = new ComboBox(options);
+        comboBox = new ComboBox(options);
         comboBox.getSelectionModel().selectFirst();
         comboBox.setId("dropdown");
 
@@ -55,7 +62,7 @@ public class Main extends Application {
         addConsertButton.setId("add-consert");
 
         addConsertButton.setOnAction(e ->
-                onAddConsert(comboBox, allSelectedConsertsText, allConsertTotalPriceText)
+                onAddConsert()
                 );
 
         Button clearConsertsButton = new Button();
@@ -63,7 +70,7 @@ public class Main extends Application {
         clearConsertsButton.setId("clear-conserts");
 
         clearConsertsButton.setOnAction(e ->
-            onClearConserts(allSelectedConsertsText,allConsertTotalPriceText)
+            onClearConserts()
         );
 
         GridPane grid = new GridPane();
@@ -84,7 +91,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void onAddConsert(ComboBox comboBox, Text allSelectedConsertsText, Text allConsertTotalPriceText) {
+    private void onAddConsert() {
         switch (comboBox.getValue().toString()) {
             case "Mark Knopfler":
                 consertsList.add(markKnopfler);
@@ -96,14 +103,14 @@ public class Main extends Application {
                 consertsList.add(metallica);
                 break;
         }
-        updateListText(allSelectedConsertsText);
-        updateTotalPriceText(allConsertTotalPriceText);
+        updateListText();
+        updateTotalPriceText();
     }
 
-    private void onClearConserts(Text allSelectedConsertsText, Text allConsertTotalPriceText) {
+    private void onClearConserts() {
         consertsList.clear();
-        updateListText(allSelectedConsertsText);
-        updateTotalPriceText(allConsertTotalPriceText);
+        updateListText();
+        updateTotalPriceText();
     }
 
     private String updatePriceText(String s) {
@@ -118,19 +125,19 @@ public class Main extends Application {
         return "";
     }
 
-    private void updateListText(Text text) {
+    private void updateListText() {
         String s = "";
         for (Consert list : consertsList) {
             s += list.getName() + " | " + list.getPrice() + "kr." + "\n";
         }
-        text.setText(s);
+        allSelectedConsertsText.setText(s);
     }
 
-    private void updateTotalPriceText(Text text) {
+    private void updateTotalPriceText() {
         int i = 0;
         for (Consert list : consertsList) {
             i += list.getPrice();
         }
-        text.setText("Totalpris: " + i + " kr");
+        allConsertTotalPriceText.setText("Totalpris: " + i + " kr");
     }
 }
