@@ -1,5 +1,9 @@
 package com.company;
 
+/**
+ * En klass som representerar en konsert, innehåller namn och pris.
+ * @author Andreas Sanz
+ */
 public class Consert {
     private String name;
     private int price;

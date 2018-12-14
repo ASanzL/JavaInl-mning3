@@ -17,8 +17,8 @@ import java.util.ArrayList;
  * Program för att köpa konsertbiljetter.
  * @author Andreas Sanz
  */
+//TO-DO: Göra så man kan välja antal biljetter, med +/-
 public class Main extends Application {
-
     ArrayList<Consert> consertsList = new ArrayList<>();
     Consert markKnopfler = new Consert("Mark Knopfler", 630);
     Consert bobDylan = new Consert("Bob Dylan", 645);
@@ -73,17 +73,28 @@ public class Main extends Application {
             onClearConserts()
         );
 
+        Button buyButton = new Button();
+        buyButton.setText("Köp");
+        buyButton.setId("buy-conserts");
+
+        buyButton.setOnAction(e -> {
+            if(!consertsList.isEmpty()) {
+                stage.close();
+            }
+        });
+
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(5);
+        grid.setVgap(5);
         grid.setAlignment(Pos.TOP_CENTER);
 
         grid.add(comboBox, 0, 0);
         grid.add(selectedConsertPriceText, 1, 0);
         grid.add(addConsertButton, 1, 1);
         grid.add(clearConsertsButton, 2, 1);
-        grid.add(allSelectedConsertsText, 0, 2);
-        grid.add(allConsertTotalPriceText, 0, 3);
+        grid.add(buyButton, 1, 2);
+        grid.add(allSelectedConsertsText, 0, 3);
+        grid.add(allConsertTotalPriceText, 0, 2);
 
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add("style.css");
@@ -91,6 +102,9 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Läser värdet ur combobox och lägger in rätt värde i consertlist.
+     */
     private void onAddConsert() {
         switch (comboBox.getValue().toString()) {
             case "Mark Knopfler":
@@ -107,12 +121,20 @@ public class Main extends Application {
         updateTotalPriceText();
     }
 
+    /**
+     * Rensar consertlist
+     */
     private void onClearConserts() {
         consertsList.clear();
         updateListText();
         updateTotalPriceText();
     }
 
+    /**
+     * Skapar textsträng med vald konserts pris
+     * @param s Konsert namn
+     * @return Pris i kr
+     */
     private String updatePriceText(String s) {
         switch (s) {
             case "Mark Knopfler":
@@ -125,6 +147,9 @@ public class Main extends Application {
         return "";
     }
 
+    /**
+     * Uppdaterar ett textfält med alla valda konserter.
+     */
     private void updateListText() {
         String s = "";
         for (Consert list : consertsList) {
@@ -133,6 +158,9 @@ public class Main extends Application {
         allSelectedConsertsText.setText(s);
     }
 
+    /**
+     * Uppdaterar ett textfält med det totala priset för alla valda konserter.
+     */
     private void updateTotalPriceText() {
         int i = 0;
         for (Consert list : consertsList) {
