@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * Program för att köpa konsertbiljetter.
  * @author Andreas Sanz
  */
-//TO-DO: Göra så man kan välja antal biljetter, med +/-
+
 public class Main extends Application {
     ArrayList<Consert> consertsList = new ArrayList<>();
     Consert markKnopfler = new Consert("Mark Knopfler", 630);
@@ -29,6 +30,7 @@ public class Main extends Application {
     Text allConsertTotalPriceText = new Text("");
 
     ComboBox comboBox;
+    TextField numberOfTicketsTextField = new TextField();
 
     public static void main(String[] args) {
         launch(args);
@@ -42,6 +44,7 @@ public class Main extends Application {
         selectedConsertPriceText.setId("selected-price");
         allConsertTotalPriceText.setId("total-price");
 
+        //Drop down/Combobox
         ObservableList<String> options =
                 FXCollections.observableArrayList(
                         "Mark Knopfler",
@@ -52,11 +55,17 @@ public class Main extends Application {
         comboBox.getSelectionModel().selectFirst();
         comboBox.setId("dropdown");
 
+        //Vald konserts pris
         selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()));
         comboBox.setOnAction(e ->
                 selectedConsertPriceText.setText(updatePriceText(comboBox.getValue().toString()))
         );
 
+        //Antal biljetter textfält
+        numberOfTicketsTextField.setText("1");
+        numberOfTicketsTextField.setId("number-of-tickets");
+
+        //Lägg till konsert
         Button addConsertButton = new Button();
         addConsertButton.setText("Lägg till");
         addConsertButton.setId("add-consert");
@@ -65,6 +74,7 @@ public class Main extends Application {
                 onAddConsert()
                 );
 
+        //Rensa lista
         Button clearConsertsButton = new Button();
         clearConsertsButton.setText("Rensa");
         clearConsertsButton.setId("clear-conserts");
@@ -73,6 +83,7 @@ public class Main extends Application {
             onClearConserts()
         );
 
+        //Köp
         Button buyButton = new Button();
         buyButton.setText("Köp");
         buyButton.setId("buy-conserts");
@@ -83,6 +94,7 @@ public class Main extends Application {
             }
         });
 
+        //Grid
         GridPane grid = new GridPane();
         grid.setHgap(5);
         grid.setVgap(5);
@@ -91,11 +103,13 @@ public class Main extends Application {
         grid.add(comboBox, 0, 0);
         grid.add(selectedConsertPriceText, 1, 0);
         grid.add(addConsertButton, 1, 1);
-        grid.add(clearConsertsButton, 2, 1);
+        grid.add(clearConsertsButton, 3, 1);
+        grid.add(numberOfTicketsTextField, 2, 1);
         grid.add(buyButton, 1, 2);
-        grid.add(allSelectedConsertsText, 0, 3);
         grid.add(allConsertTotalPriceText, 0, 2);
+        grid.add(allSelectedConsertsText, 0, 3);
 
+        //Scene
         Scene scene = new Scene(grid, 600, 400);
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
@@ -108,17 +122,34 @@ public class Main extends Application {
     private void onAddConsert() {
         switch (comboBox.getValue().toString()) {
             case "Mark Knopfler":
-                consertsList.add(markKnopfler);
+                addToConsertList(markKnopfler);
                 break;
             case "Bob Dylan":
-                consertsList.add(bobDylan);
+                addToConsertList(bobDylan);
                 break;
             case "Metallica":
-                consertsList.add(metallica);
+                addToConsertList(metallica);
                 break;
         }
         updateListText();
         updateTotalPriceText();
+    }
+
+    /**
+     * Lägger till en konert i consertList så många gånger som det står i numberOfTicketsTextField
+     * @param consert Konserten
+     */
+    private void addToConsertList(Consert consert) {
+        int tickets = 1;
+        try {
+            tickets = Integer.parseInt(numberOfTicketsTextField.getText());
+        } catch (NumberFormatException e) {
+            tickets = 0;
+        }
+
+        for(int i = 0; i < tickets; i++) {
+            consertsList.add(consert);
+        }
     }
 
     /**
